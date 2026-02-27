@@ -1,12 +1,15 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 let supabaseInstance: ReturnType<typeof createClient<Database>> | null = null
 
 export function getSupabaseClient() {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Supabase env vars not configured')
+  }
   if (!supabaseInstance) {
     supabaseInstance = createClient<Database>(supabaseUrl, supabaseAnonKey, {
       auth: { persistSession: false },
@@ -15,6 +18,4 @@ export function getSupabaseClient() {
   return supabaseInstance
 }
 
-export const supabase = typeof window !== 'undefined'
-  ? getSupabaseClient()
-  : null
+export const supabase = null
