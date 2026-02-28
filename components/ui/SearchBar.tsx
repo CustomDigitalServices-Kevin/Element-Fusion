@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Search, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import { clsx } from 'clsx'
 
 interface SearchBarProps {
@@ -14,6 +14,7 @@ interface SearchBarProps {
 
 export function SearchBar({ value, onChange, placeholder = 'Rechercher...', className, debounceMs = 150 }: SearchBarProps) {
   const [localValue, setLocalValue] = useState(value)
+  const [isFocused, setIsFocused] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
@@ -34,28 +35,33 @@ export function SearchBar({ value, onChange, placeholder = 'Rechercher...', clas
 
   return (
     <div className={clsx('relative flex items-center', className)}>
-      <Search className="absolute left-3 w-4 h-4 text-text-secondary pointer-events-none" />
       <input
         type="text"
         value={localValue}
         onChange={handleChange}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         placeholder={placeholder}
         className={clsx(
-          'w-full h-9 pl-9 pr-8 text-sm',
-          'bg-bg-secondary border border-border-color rounded-xl',
-          'text-text-primary placeholder:text-text-secondary',
-          'focus:outline-none focus:border-accent-primary focus:ring-1 focus:ring-accent-primary',
-          'transition-colors duration-200'
+          'w-full h-12 px-4 text-sm',
+          'bg-glass-bg/40 border border-glass-border rounded-xl',
+          'text-text-primary placeholder:text-text-secondary/50',
+          'focus:outline-none transition-all duration-300',
+          isFocused && 'neon-focus border-accent-primary/50'
         )}
+        style={{
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+        }}
         aria-label={placeholder}
       />
       {localValue && (
         <button
           onClick={handleClear}
-          className="absolute right-2.5 p-0.5 text-text-secondary hover:text-text-primary transition-colors"
+          className="absolute right-3 p-1 text-text-secondary hover:text-accent-glow transition-colors duration-200"
           aria-label="Effacer la recherche"
         >
-          <X className="w-3.5 h-3.5" />
+          <X className="w-4 h-4" />
         </button>
       )}
     </div>

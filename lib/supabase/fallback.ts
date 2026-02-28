@@ -105,7 +105,7 @@ const fallbackData: FallbackData = {
     { id: 30, element1_id: 3, element2_id: 11, result_id: 34 }, // Terre+Pierre=Montagne
     { id: 31, element1_id: 16, element2_id: 16, result_id: 35 }, // Sable+Sable=Désert
     { id: 32, element1_id: 29, element2_id: 29, result_id: 36 }, // Arbre+Arbre=Forêt
-    { id: 33, element1_id: 6, element2_id: 15, result_id: 37 }, // Boue+Plante=Marais
+    { id: 33, element1_id: 6, element2_id: 22, result_id: 37 }, // Boue+Rivière=Marais
     { id: 34, element1_id: 18, element2_id: 34, result_id: 38 }, // Glace+Montagne=Glacier
     { id: 35, element1_id: 9, element2_id: 40, result_id: 39 }, // Pluie+Soleil=Arc-en-ciel
     { id: 36, element1_id: 2, element2_id: 2, result_id: 40 },  // Feu+Feu=Soleil
@@ -113,7 +113,7 @@ const fallbackData: FallbackData = {
     { id: 38, element1_id: 2, element2_id: 16, result_id: 42 }, // Feu+Sable=Verre
     { id: 39, element1_id: 2, element2_id: 29, result_id: 43 }, // Feu+Arbre=Charbon
     { id: 40, element1_id: 11, element2_id: 29, result_id: 44 }, // Pierre+Arbre=Fossile
-    { id: 41, element1_id: 3, element2_id: 15, result_id: 45 }, // Terre+Plante=Animal
+    { id: 41, element1_id: 15, element2_id: 22, result_id: 45 }, // Plante+Rivière=Animal
     { id: 42, element1_id: 1, element2_id: 45, result_id: 46 }, // Eau+Animal=Poisson
     { id: 43, element1_id: 4, element2_id: 45, result_id: 47 }, // Air+Animal=Oiseau
     // Alt paths

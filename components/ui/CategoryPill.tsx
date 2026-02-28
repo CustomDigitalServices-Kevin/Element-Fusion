@@ -14,22 +14,27 @@ export function CategoryPill({ name, icon, color, isActive = false, onClick, cla
     <button
       onClick={onClick}
       className={clsx(
-        'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium',
-        'border transition-all duration-200',
+        'flex items-center gap-2 w-full px-4 py-2.5 rounded-xl text-[13px] font-medium',
+        'border transition-all duration-300',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary',
         isActive
-          ? 'text-white'
-          : 'text-text-secondary hover:text-text-primary',
+          ? 'text-white border-transparent shadow-lg'
+          : 'text-text-secondary hover:text-text-primary border-glass-border bg-glass-bg/30 hover:bg-glass-bg/50',
         className
       )}
       style={
         isActive
-          ? { backgroundColor: color, borderColor: color }
-          : { backgroundColor: `${color}15`, borderColor: `${color}40`, color: color }
+          ? {
+              background: `linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-glow))`,
+              backgroundSize: '200% 200%',
+              animation: 'gradient-shift 3s ease infinite',
+              boxShadow: `0 0 16px ${color}40, 0 0 32px ${color}20`,
+            }
+          : undefined
       }
       aria-pressed={isActive}
     >
-      <span>{icon}</span>
+      <span className="text-base leading-none">{icon}</span>
       <span>{name}</span>
     </button>
   )

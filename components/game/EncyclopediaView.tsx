@@ -26,7 +26,7 @@ export function EncyclopediaView() {
   }, [elements, discoveredElementIds, categories])
 
   return (
-    <div className="max-h-[60vh] overflow-y-auto space-y-6 pr-1">
+    <div className="max-h-[60vh] overflow-y-auto space-y-6 pr-1 -webkit-overflow-scrolling-touch">
       {Array.from(categories.values()).map(category => {
         const data = byCategory.get(category.id)
         if (!data || data.total === 0) return null
@@ -40,7 +40,7 @@ export function EncyclopediaView() {
                 {data.discovered}/{data.total}
               </span>
             </div>
-            <div className="grid grid-cols-5 gap-2">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
               {Array.from(data.elements.values())
                 .sort((a, b) => a.tier - b.tier)
                 .map(el => {

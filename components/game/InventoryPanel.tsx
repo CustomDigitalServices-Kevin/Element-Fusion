@@ -7,7 +7,12 @@ import { SearchBar, CategoryPill } from '@/components/ui'
 
 type SortMode = 'recent' | 'alpha' | 'tier'
 
-export function InventoryPanel() {
+interface InventoryPanelProps {
+  selectedElementId?: number | null
+  onElementTap?: (elementId: number) => void
+}
+
+export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPanelProps) {
   const elements = useGameStore(state => state.elements)
   const discoveredElementIds = useGameStore(state => state.discoveredElementIds)
   const categories = useGameStore(state => state.categories)
@@ -51,33 +56,46 @@ export function InventoryPanel() {
 
   const categoryList = useMemo(() => Array.from(categories.values()), [categories])
 
-  return (
-    <div className="flex flex-col h-full gap-3 p-3">
-      <SearchBar
-        value={search}
-        onChange={setSearch}
-        placeholder="Rechercher un element..."
-      />
+  const totalElements = 90
+  const discoveredCount = discoveredElementIds.size
+  const progressPercent = Math.round((discoveredCount / totalElements) * 100)
 
-      {/* Sort buttons */}
-      <div className="flex gap-1.5">
-        {(['recent', 'alpha', 'tier'] as SortMode[]).map(mode => (
-          <button
-            key={mode}
-            onClick={() => setSortMode(mode)}
-            className={`text-xs px-2.5 py-1 rounded-lg transition-colors ${
-              sortMode === mode
-                ? 'bg-accent-primary text-white'
-                : 'bg-bg-secondary text-text-secondary hover:text-text-primary'
-            }`}
-          >
-            {mode === 'recent' ? 'Recent' : mode === 'alpha' ? 'A->Z' : 'Tier'}
-          </button>
-        ))}
+  return (
+    <div className="flex flex-col h-full px-4 py-4 gap-3">
+      {/* Search bar - no icon, just clean input */}
+      <div className="shrink-0">
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          placeholder="Rechercher un element..."
+        />
       </div>
 
-      {/* Category filters */}
-      <div className="flex flex-wrap gap-1.5">
+      {/* Sort buttons */}
+      <div className="shrink-0">
+        <div className="flex w-full glass-panel rounded-xl p-1">
+          {(['recent', 'alpha', 'tier'] as SortMode[]).map(mode => (
+            <button
+              key={mode}
+              onClick={() => setSortMode(mode)}
+              className={`flex-1 text-[13px] py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap font-semibold ${
+                sortMode === mode
+                  ? 'text-white'
+                  : 'text-text-secondary hover:text-text-primary'
+              }`}
+              style={sortMode === mode ? {
+                background: 'linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-glow))',
+                boxShadow: '0 0 12px rgba(108, 99, 255, 0.3)',
+              } : undefined}
+            >
+              {mode === 'recent' ? 'Recent' : mode === 'alpha' ? 'A → Z' : 'Tier'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Category filters - VERTICAL column layout */}
+      <div className="shrink-0 flex flex-col gap-1.5">
         <CategoryPill
           name="Tous"
           icon="&#x1F310;"
@@ -97,15 +115,23 @@ export function InventoryPanel() {
         ))}
       </div>
 
-      {/* Elements grid */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="grid grid-cols-3 gap-2 pb-4">
+      {/* Glow separator */}
+      <div className="shrink-0 glow-line" />
+
+      {/* Elements grid - cards, NO scrollbar visible */}
+      <div className="flex-1 overflow-y-auto min-h-0 scrollbar-none">
+        <div
+          className="grid gap-3 pb-2"
+          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))' }}
+        >
           {filtered.map(element => (
             <DraggableElement
               key={element.id}
               element={element}
               dragId={`inventory-${element.id}`}
               size="md"
+              isSelected={selectedElementId === element.id}
+              onTap={onElementTap ? () => onElementTap(element.id) : undefined}
             />
           ))}
         </div>
@@ -116,9 +142,24 @@ export function InventoryPanel() {
         )}
       </div>
 
-      {/* Count */}
-      <div className="text-xs text-text-secondary text-center pb-1">
-        {discoveredElementIds.size} element{discoveredElementIds.size > 1 ? 's' : ''} decouvert{discoveredElementIds.size > 1 ? 's' : ''}
+      {/* Glow separator */}
+      <div className="shrink-0 glow-line" />
+
+      {/* Progress bar + count */}
+      <div className="shrink-0 flex items-center gap-3">
+        <div className="flex-1 h-2 rounded-full bg-glass-bg/60 overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all duration-500"
+            style={{
+              width: `${progressPercent}%`,
+              background: 'linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-glow))',
+              boxShadow: '0 0 8px rgba(108, 99, 255, 0.4)',
+            }}
+          />
+        </div>
+        <span className="text-[12px] text-text-secondary font-medium whitespace-nowrap">
+          {discoveredCount}/{totalElements}
+        </span>
       </div>
     </div>
   )

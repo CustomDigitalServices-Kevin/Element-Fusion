@@ -21,7 +21,6 @@ export async function fetchAllCategories(): Promise<Category[]> {
     cachedCategories = data
     return data
   } catch {
-    console.warn('Supabase unavailable, using fallback data')
     const fallback = getFallbackData()
     cachedCategories = fallback.categories
     return fallback.categories

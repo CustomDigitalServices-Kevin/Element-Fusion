@@ -21,13 +21,9 @@ export interface WorkspaceElement {
   y: number
 }
 
-export interface FusionResult {
-  success: true
-  result: GameElement
-  isNewDiscovery: boolean
-} | {
-  success: false
-}
+export type FusionResult =
+  | { success: true; result: GameElement; isNewDiscovery: boolean }
+  | { success: false }
 
 export interface GameStats {
   totalFusions: number

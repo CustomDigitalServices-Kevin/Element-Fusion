@@ -5,13 +5,14 @@ import { Lightbulb, RotateCcw, BookOpen } from 'lucide-react'
 import { useGameStore } from '@/store/gameStore'
 import { ProgressBar, Button, Tooltip, Modal } from '@/components/ui'
 import { SoundToggle } from '@/components/effects/SoundToggle'
+import { ProgressBarAnimation } from '@/components/effects/ProgressBarAnimation'
 import { EncyclopediaView } from './EncyclopediaView'
 
 const TOTAL_ELEMENTS = 90
 
 export function Header() {
   const discoveredElementIds = useGameStore(state => state.discoveredElementIds)
-  const useHint = useGameStore(state => state.useHint)
+  const requestHint = useGameStore(state => state.useHint)
   const currentHint = useGameStore(state => state.currentHint)
   const resetProgress = useGameStore(state => state.resetProgress)
   const elements = useGameStore(state => state.elements)
@@ -19,11 +20,11 @@ export function Header() {
   const [showEncyclopedia, setShowEncyclopedia] = useState(false)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
 
-  const handleHint = () => useHint()
+  const handleHint = () => requestHint()
 
   return (
     <>
-      <header className="h-14 flex items-center gap-4 px-4 border-b border-border-color bg-bg-secondary/80 backdrop-blur-sm sticky top-0 z-30">
+      <header className="h-14 flex items-center gap-2 sm:gap-4 px-3 sm:px-4 border-b border-border-color bg-bg-secondary/80 backdrop-blur-sm [-webkit-backdrop-filter:blur(8px)] sticky top-0 z-30">
         {/* Logo */}
         <div className="flex items-center gap-2 shrink-0">
           <span className="text-lg">&#x2728;</span>
@@ -31,8 +32,12 @@ export function Header() {
         </div>
 
         {/* Progress */}
-        <div className="flex-1 max-w-xs">
+        <div className="flex-1 max-w-xs relative">
           <ProgressBar
+            current={discoveredElementIds.size}
+            total={TOTAL_ELEMENTS}
+          />
+          <ProgressBarAnimation
             current={discoveredElementIds.size}
             total={TOTAL_ELEMENTS}
           />

@@ -13,14 +13,16 @@ export function Badge({ variant = 'new', label, color, className }: BadgeProps) 
   if (variant === 'new') {
     return (
       <span className={clsx(
-        'absolute -top-1.5 -right-1.5 z-10',
-        'bg-accent-primary text-white text-[9px] font-bold',
-        'px-1.5 py-0.5 rounded-full',
-        'animate-pulse-glow',
+        'absolute top-0.5 right-0.5 z-10',
+        'w-2.5 h-2.5 rounded-full',
+        'bg-accent-glow',
+        'ring-2 ring-accent-glow/30',
         className
-      )}>
-        NEW
-      </span>
+      )}
+      style={{
+        animation: 'glow-pulse 2s ease-in-out infinite',
+      }}
+      />
     )
   }
 

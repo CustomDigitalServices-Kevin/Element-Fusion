@@ -17,5 +17,3 @@ export function getSupabaseClient() {
   }
   return supabaseInstance
 }
-
-export const supabase = null

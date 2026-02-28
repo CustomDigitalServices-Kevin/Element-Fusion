@@ -32,7 +32,7 @@ const nextConfig = {
   async headers() {
     return [{ source: '/(.*)', headers: securityHeaders }]
   },
-  images: { domains: [] },
+  images: { remotePatterns: [] },
   compress: true,
 }
 

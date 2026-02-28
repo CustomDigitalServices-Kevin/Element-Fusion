@@ -9,9 +9,11 @@ interface DraggableElementProps {
   element: GameElement
   dragId: string
   data?: Record<string, unknown>
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg' | 'list'
   isInWorkspace?: boolean
   instanceId?: string
+  isSelected?: boolean
+  onTap?: () => void
 }
 
 export function DraggableElement({
@@ -21,6 +23,8 @@ export function DraggableElement({
   size = 'md',
   isInWorkspace = false,
   instanceId,
+  isSelected = false,
+  onTap,
 }: DraggableElementProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: dragId,
@@ -40,6 +44,8 @@ export function DraggableElement({
         size={size}
         isDragging={isDragging}
         isInWorkspace={isInWorkspace}
+        isSelected={isSelected}
+        onClick={onTap}
       />
     </div>
   )

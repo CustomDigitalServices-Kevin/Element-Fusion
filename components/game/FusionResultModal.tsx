@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
-import { Badge } from '@/components/ui'
 import { audioManager } from '@/lib/audio/audioManager'
 import { FusionParticles } from '@/components/effects'
 
