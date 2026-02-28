@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { useGameStore } from '@/store/gameStore'
 import { DraggableElement } from './DraggableElement'
 import { SearchBar, CategoryPill } from '@/components/ui'
+import { useLanguage } from '@/lib/i18n'
 
 type SortMode = 'recent' | 'alpha' | 'tier'
 
@@ -13,6 +14,7 @@ interface InventoryPanelProps {
 }
 
 export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPanelProps) {
+  const { t, tElement, tCategory } = useLanguage()
   const elements = useGameStore(state => state.elements)
   const discoveredElementIds = useGameStore(state => state.discoveredElementIds)
   const categories = useGameStore(state => state.categories)
@@ -32,7 +34,10 @@ export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPan
 
     if (search.trim()) {
       const q = search.toLowerCase()
-      result = result.filter(el => el.name.toLowerCase().includes(q))
+      result = result.filter(el => {
+        const translatedName = tElement(el.id).toLowerCase()
+        return translatedName.includes(q) || el.name.toLowerCase().includes(q)
+      })
     }
 
     if (activeCategory !== null) {
@@ -41,7 +46,7 @@ export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPan
 
     switch (sortMode) {
       case 'alpha':
-        result = [...result].sort((a, b) => a.name.localeCompare(b.name, 'fr'))
+        result = [...result].sort((a, b) => tElement(a.id).localeCompare(tElement(b.id)))
         break
       case 'tier':
         result = [...result].sort((a, b) => a.tier - b.tier)
@@ -52,7 +57,7 @@ export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPan
     }
 
     return result
-  }, [discoveredElements, search, activeCategory, sortMode])
+  }, [discoveredElements, search, activeCategory, sortMode, tElement])
 
   const categoryList = useMemo(() => Array.from(categories.values()), [categories])
 
@@ -60,14 +65,20 @@ export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPan
   const discoveredCount = discoveredElementIds.size
   const progressPercent = Math.round((discoveredCount / totalElements) * 100)
 
+  const sortLabels: Record<SortMode, string> = {
+    recent: t.sort_recent,
+    alpha: t.sort_alpha,
+    tier: t.sort_tier,
+  }
+
   return (
     <div className="flex flex-col h-full px-4 py-4 gap-3">
-      {/* Search bar - no icon, just clean input */}
+      {/* Search bar */}
       <div className="shrink-0">
         <SearchBar
           value={search}
           onChange={setSearch}
-          placeholder="Rechercher un element..."
+          placeholder={t.search_placeholder}
         />
       </div>
 
@@ -88,7 +99,7 @@ export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPan
                 boxShadow: '0 0 12px rgba(108, 99, 255, 0.3)',
               } : undefined}
             >
-              {mode === 'recent' ? 'Recent' : mode === 'alpha' ? 'A → Z' : 'Tier'}
+              {sortLabels[mode]}
             </button>
           ))}
         </div>
@@ -97,7 +108,7 @@ export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPan
       {/* Category filters - VERTICAL column layout */}
       <div className="shrink-0 flex flex-col gap-1.5">
         <CategoryPill
-          name="Tous"
+          name={t.category_all}
           icon="&#x1F310;"
           color="#6C63FF"
           isActive={activeCategory === null}
@@ -106,7 +117,7 @@ export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPan
         {categoryList.map(cat => (
           <CategoryPill
             key={cat.id}
-            name={cat.name}
+            name={tCategory(cat.id)}
             icon={cat.icon}
             color={cat.color}
             isActive={activeCategory === cat.id}
@@ -118,7 +129,7 @@ export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPan
       {/* Glow separator */}
       <div className="shrink-0 glow-line" />
 
-      {/* Elements grid - cards, NO scrollbar visible */}
+      {/* Elements grid */}
       <div className="flex-1 overflow-y-auto min-h-0 scrollbar-none">
         <div
           className="grid gap-3 pb-2"
@@ -137,7 +148,7 @@ export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPan
         </div>
         {filtered.length === 0 && (
           <p className="text-center text-text-secondary text-sm py-8">
-            {search ? 'Aucun resultat' : 'Aucun element decouvert'}
+            {search ? t.no_results : t.no_elements}
           </p>
         )}
       </div>

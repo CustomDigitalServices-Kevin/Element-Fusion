@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 import { clsx } from 'clsx'
+import { useLanguage } from '@/lib/i18n'
 
 interface SearchBarProps {
   value: string
@@ -12,7 +13,9 @@ interface SearchBarProps {
   debounceMs?: number
 }
 
-export function SearchBar({ value, onChange, placeholder = 'Rechercher...', className, debounceMs = 150 }: SearchBarProps) {
+export function SearchBar({ value, onChange, placeholder, className, debounceMs = 150 }: SearchBarProps) {
+  const { t } = useLanguage()
+  const resolvedPlaceholder = placeholder ?? t.search_default
   const [localValue, setLocalValue] = useState(value)
   const [isFocused, setIsFocused] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -41,7 +44,7 @@ export function SearchBar({ value, onChange, placeholder = 'Rechercher...', clas
         onChange={handleChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        placeholder={placeholder}
+        placeholder={resolvedPlaceholder}
         className={clsx(
           'w-full h-12 px-4 text-sm',
           'bg-glass-bg/40 border border-glass-border rounded-xl',
@@ -53,13 +56,13 @@ export function SearchBar({ value, onChange, placeholder = 'Rechercher...', clas
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
         }}
-        aria-label={placeholder}
+        aria-label={resolvedPlaceholder}
       />
       {localValue && (
         <button
           onClick={handleClear}
           className="absolute right-3 p-1 text-text-secondary hover:text-accent-glow transition-colors duration-200"
-          aria-label="Effacer la recherche"
+          aria-label={t.clear_search}
         >
           <X className="w-4 h-4" />
         </button>

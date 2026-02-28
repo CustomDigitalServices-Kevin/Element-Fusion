@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
 import { audioManager } from '@/lib/audio/audioManager'
+import { useLanguage } from '@/lib/i18n'
 import type { Achievement } from '@/types/game'
 
 export function AchievementToast() {
+  const { t, tAchievement } = useLanguage()
   const achievements = useGameStore(state => state.achievements)
   const [toast, setToast] = useState<Achievement | null>(null)
   const prevAchievementsRef = useRef(achievements)
@@ -43,10 +45,10 @@ export function AchievementToast() {
           <span className="text-3xl">{toast.emoji}</span>
           <div>
             <div className="text-xs font-semibold text-accent-success uppercase tracking-wider">
-              Succes debloque !
+              {t.achievement_unlocked}
             </div>
-            <div className="text-sm font-bold text-text-primary">{toast.name}</div>
-            <div className="text-xs text-text-secondary">{toast.description}</div>
+            <div className="text-sm font-bold text-text-primary">{tAchievement(toast.id, 'name')}</div>
+            <div className="text-xs text-text-secondary">{tAchievement(toast.id, 'desc')}</div>
           </div>
         </motion.div>
       )}

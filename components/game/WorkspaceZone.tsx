@@ -10,6 +10,7 @@ import { Button } from '@/components/ui'
 import { ShakeAnimation, FusionParticles } from '@/components/effects'
 import { audioManager } from '@/lib/audio/audioManager'
 import { clsx } from 'clsx'
+import { useLanguage } from '@/lib/i18n'
 import type { GameElement } from '@/types/game'
 
 type FeedbackState =
@@ -19,6 +20,7 @@ type FeedbackState =
   | { type: 'known'; element: GameElement }
 
 export function WorkspaceZone() {
+  const { t, tElement } = useLanguage()
   const workspaceElements = useGameStore(state => state.workspaceElements)
   const elements = useGameStore(state => state.elements)
   const clearWorkspace = useGameStore(state => state.clearWorkspace)
@@ -78,16 +80,16 @@ export function WorkspaceZone() {
     <div className="relative flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-border-color shrink-0">
-        <span className="text-xs font-medium text-text-secondary">Zone de fusion</span>
+        <span className="text-xs font-medium text-text-secondary">{t.fusion_zone}</span>
         {(workspaceElements.length > 0 || feedback.type !== 'idle') && (
           <Button
             variant="ghost"
             size="sm"
             onClick={handleClearFeedback}
             leftIcon={<Trash2 className="w-3.5 h-3.5" />}
-            aria-label="Vider le workspace"
+            aria-label={t.clear}
           >
-            Vider
+            {t.clear}
           </Button>
         )}
       </div>
@@ -130,7 +132,7 @@ export function WorkspaceZone() {
                     className="text-text-secondary/30 text-center"
                   >
                     <Plus className="w-6 h-6 mx-auto mb-1" />
-                    <span className="text-[10px]">Element 1</span>
+                    <span className="text-[10px]">{t.slot_1}</span>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -174,7 +176,7 @@ export function WorkspaceZone() {
                     className="text-text-secondary/30 text-center"
                   >
                     <Plus className="w-6 h-6 mx-auto mb-1" />
-                    <span className="text-[10px]">Element 2</span>
+                    <span className="text-[10px]">{t.slot_2}</span>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -225,7 +227,7 @@ export function WorkspaceZone() {
                 exit={{ opacity: 0, y: -10 }}
                 className="text-accent-error text-sm font-medium"
               >
-                Pas de combinaison
+                {t.no_combination}
               </motion.p>
             )}
             {feedback.type === 'success' && (
@@ -236,7 +238,7 @@ export function WorkspaceZone() {
                 exit={{ opacity: 0, y: -10 }}
                 className="text-accent-success text-sm font-medium"
               >
-                Nouveau ! {feedback.element.emoji} {feedback.element.name}
+                {t.new_discovery} {feedback.element.emoji} {tElement(feedback.element.id)}
               </motion.p>
             )}
             {feedback.type === 'known' && (
@@ -247,7 +249,7 @@ export function WorkspaceZone() {
                 exit={{ opacity: 0, y: -10 }}
                 className="text-text-secondary text-sm"
               >
-                Deja decouvert : {feedback.element.emoji} {feedback.element.name}
+                {t.already_known} {feedback.element.emoji} {tElement(feedback.element.id)}
               </motion.p>
             )}
             {feedback.type === 'idle' && workspaceElements.length === 0 && (
@@ -259,7 +261,7 @@ export function WorkspaceZone() {
                 className="text-center"
               >
                 <p className="text-text-secondary/60 text-xs sm:text-sm">
-                  Glisse 2 elements ici pour les fusionner
+                  {t.workspace_hint}
                 </p>
               </motion.div>
             )}
@@ -271,7 +273,7 @@ export function WorkspaceZone() {
                 exit={{ opacity: 0 }}
                 className="text-accent-primary text-xs sm:text-sm animate-pulse"
               >
-                Ajoute un 2eme element
+                {t.workspace_hint_one}
               </motion.p>
             )}
           </AnimatePresence>

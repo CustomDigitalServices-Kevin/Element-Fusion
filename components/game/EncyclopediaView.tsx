@@ -2,9 +2,11 @@
 
 import { useMemo } from 'react'
 import { useGameStore } from '@/store/gameStore'
+import { useLanguage } from '@/lib/i18n'
 import { clsx } from 'clsx'
 
 export function EncyclopediaView() {
+  const { t, tElement, tCategory } = useLanguage()
   const elements = useGameStore(state => state.elements)
   const discoveredElementIds = useGameStore(state => state.discoveredElementIds)
   const categories = useGameStore(state => state.categories)
@@ -34,7 +36,7 @@ export function EncyclopediaView() {
           <div key={category.id}>
             <div className="flex items-center justify-between mb-3">
               <span className="font-semibold text-sm" style={{ color: category.color }}>
-                {category.icon} {category.name}
+                {category.icon} {tCategory(category.id)}
               </span>
               <span className="text-xs text-text-secondary">
                 {data.discovered}/{data.total}
@@ -54,11 +56,11 @@ export function EncyclopediaView() {
                           ? 'border-[rgba(255,255,255,0.08)] bg-bg-secondary'
                           : 'border-border-color bg-bg-primary opacity-40'
                       )}
-                      title={isDiscovered ? el.name : '???'}
+                      title={isDiscovered ? tElement(el.id) : t.undiscovered}
                     >
                       <span className="text-xl">{isDiscovered ? el.emoji : '&#x2753;'}</span>
                       <span className="text-[9px] text-text-secondary truncate w-full text-center">
-                        {isDiscovered ? el.name : '???'}
+                        {isDiscovered ? tElement(el.id) : t.undiscovered}
                       </span>
                     </div>
                   )

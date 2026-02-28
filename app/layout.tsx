@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
+import { LanguageProvider } from '@/lib/i18n'
 import './globals.css'
 
 const inter = Inter({
@@ -37,7 +38,9 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`dark ${inter.variable}`}>
       <body className={`${inter.className} bg-bg-primary text-text-primary antialiased`}>
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   )

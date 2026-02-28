@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
+import { useLanguage } from '@/lib/i18n'
 
 interface ModalProps {
   isOpen: boolean
@@ -19,6 +20,7 @@ const sizeClasses = {
 }
 
 export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalProps) {
+  const { t } = useLanguage()
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -64,7 +66,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
                   <button
                     onClick={onClose}
                     className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-secondary transition-colors"
-                    aria-label="Fermer"
+                    aria-label={t.close}
                   >
                     <X className="w-4 h-4" />
                   </button>

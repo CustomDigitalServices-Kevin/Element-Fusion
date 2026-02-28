@@ -3,30 +3,22 @@
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Button } from '@/components/ui'
+import { useLanguage } from '@/lib/i18n'
 
 const ONBOARDING_KEY = 'element-fusion-onboarding-done'
 
-const steps = [
-  {
-    emoji: '👆',
-    title: 'Glisse un element',
-    description: 'Selectionne un element dans ton inventaire et glisse-le dans la zone de fusion. Tu peux aussi taper dessus !',
-  },
-  {
-    emoji: '✌️',
-    title: 'Ajoute un 2eme element',
-    description: 'Combine 2 elements ensemble pour decouvrir de nouvelles creations.',
-  },
-  {
-    emoji: '🔮',
-    title: 'Decouvre des combinaisons !',
-    description: 'Eau + Feu = Vapeur, Terre + Eau = Boue... Trouve les 90+ elements caches !',
-  },
-]
+const stepEmojis = ['👆', '✌️', '🔮']
 
 export function OnboardingOverlay() {
+  const { t } = useLanguage()
   const [currentStep, setCurrentStep] = useState(0)
   const [show, setShow] = useState(false)
+
+  const steps = [
+    { emoji: stepEmojis[0], title: t.onboarding_step1_title, description: t.onboarding_step1_desc },
+    { emoji: stepEmojis[1], title: t.onboarding_step2_title, description: t.onboarding_step2_desc },
+    { emoji: stepEmojis[2], title: t.onboarding_step3_title, description: t.onboarding_step3_desc },
+  ]
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -99,10 +91,10 @@ export function OnboardingOverlay() {
             {/* Actions */}
             <div className="flex gap-3 justify-center">
               <Button variant="ghost" size="sm" onClick={handleDismiss}>
-                Passer
+                {t.skip}
               </Button>
               <Button variant="primary" size="md" onClick={handleNext}>
-                {currentStep === steps.length - 1 ? 'C\'est parti !' : 'Suivant'}
+                {currentStep === steps.length - 1 ? t.lets_go : t.next}
               </Button>
             </div>
           </motion.div>

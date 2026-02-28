@@ -2,6 +2,7 @@
 
 import { clsx } from 'clsx'
 import { Badge } from '@/components/ui'
+import { useLanguage } from '@/lib/i18n'
 import type { GameElement } from '@/types/game'
 
 interface ElementCardProps {
@@ -29,6 +30,8 @@ export function ElementCard({
   className,
   onClick,
 }: ElementCardProps) {
+  const { t, tElement } = useLanguage()
+
   // List mode: horizontal row layout
   if (size === 'list') {
     return (
@@ -72,17 +75,17 @@ export function ElementCard({
         onClick={onClick}
         role={onClick ? 'button' : undefined}
         tabIndex={onClick ? 0 : undefined}
-        aria-label={`${element.emoji} ${element.name}`}
+        aria-label={`${element.emoji} ${tElement(element.id)}`}
         onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onClick() } : undefined}
       >
         {element.isNew && <Badge variant="new" />}
         <span className="text-[28px] leading-none shrink-0">{element.emoji}</span>
         <div className="flex-1 min-w-0">
           <span className="text-[13px] font-medium text-text-primary block truncate">
-            {element.name}
+            {tElement(element.id)}
           </span>
           <span className="text-[10px] text-text-secondary/60 block">
-            Tier {element.tier}
+            {t.tier} {element.tier}
           </span>
         </div>
         <div
@@ -139,16 +142,16 @@ export function ElementCard({
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
-      aria-label={`${element.emoji} ${element.name}`}
+      aria-label={`${element.emoji} ${tElement(element.id)}`}
       onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onClick() } : undefined}
     >
       {element.isNew && <Badge variant="new" />}
       <span className={clsx(emoji, 'leading-none')}>{element.emoji}</span>
       <span
         className={clsx(label, 'font-medium text-text-primary text-center leading-tight px-0.5 w-full truncate')}
-        title={element.name}
+        title={tElement(element.id)}
       >
-        {element.name}
+        {tElement(element.id)}
       </span>
     </div>
   )

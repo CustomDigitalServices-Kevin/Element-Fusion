@@ -5,8 +5,10 @@ import { Volume2, VolumeX } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { audioManager } from '@/lib/audio/audioManager'
 import { Tooltip } from '@/components/ui'
+import { useLanguage } from '@/lib/i18n'
 
 export function SoundToggle() {
+  const { t } = useLanguage()
   const [isMuted, setIsMuted] = useState(false)
 
   useEffect(() => {
@@ -25,12 +27,12 @@ export function SoundToggle() {
   }
 
   return (
-    <Tooltip content={isMuted ? 'Activer le son' : 'Couper le son'}>
+    <Tooltip content={isMuted ? t.enable_sound : t.disable_sound}>
       <motion.button
         onClick={toggle}
         whileTap={{ scale: 0.9 }}
         className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-secondary transition-colors"
-        aria-label={isMuted ? 'Activer le son' : 'Couper le son'}
+        aria-label={isMuted ? t.enable_sound : t.disable_sound}
       >
         <motion.div
           key={isMuted ? 'muted' : 'unmuted'}

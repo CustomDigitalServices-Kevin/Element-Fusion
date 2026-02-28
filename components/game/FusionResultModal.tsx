@@ -5,8 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
 import { audioManager } from '@/lib/audio/audioManager'
 import { FusionParticles } from '@/components/effects'
+import { useLanguage } from '@/lib/i18n'
 
 export function FusionResultModal() {
+  const { t, tElement, tCategory } = useLanguage()
   const lastFusionResult = useGameStore(state => state.lastFusionResult)
   const dismissFusionResult = useGameStore(state => state.dismissFusionResult)
   const categories = useGameStore(state => state.categories)
@@ -64,13 +66,13 @@ export function FusionResultModal() {
               <div>
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <span className="text-xs font-semibold text-accent-success uppercase tracking-widest">
-                    Nouveau !
+                    {t.new_discovery}
                   </span>
                 </div>
-                <h2 className="text-2xl font-bold text-text-primary">{result.name}</h2>
+                <h2 className="text-2xl font-bold text-text-primary">{tElement(result.id)}</h2>
                 {category && (
                   <span className="text-xs mt-1 inline-block" style={{ color: category.color }}>
-                    {category.icon} {category.name}
+                    {category.icon} {tCategory(category.id)}
                   </span>
                 )}
                 {result.description && (
@@ -78,7 +80,7 @@ export function FusionResultModal() {
                 )}
               </div>
 
-              <span className="text-xs text-text-secondary">Cliquez pour continuer</span>
+              <span className="text-xs text-text-secondary">{t.click_to_continue}</span>
             </div>
           </motion.div>
         </>
