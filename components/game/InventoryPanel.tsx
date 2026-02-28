@@ -5,6 +5,7 @@ import { useGameStore } from '@/store/gameStore'
 import { DraggableElement } from './DraggableElement'
 import { SearchBar, CategoryPill } from '@/components/ui'
 import { useLanguage } from '@/lib/i18n'
+import { useResponsive } from '@/hooks/useResponsive'
 
 type SortMode = 'recent' | 'alpha' | 'tier'
 
@@ -15,6 +16,8 @@ interface InventoryPanelProps {
 
 export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPanelProps) {
   const { t, tElement, tCategory } = useLanguage()
+  const breakpoint = useResponsive()
+  const isMobile = breakpoint === 'mobile'
   const elements = useGameStore(state => state.elements)
   const discoveredElementIds = useGameStore(state => state.discoveredElementIds)
   const categories = useGameStore(state => state.categories)
@@ -72,47 +75,87 @@ export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPan
   }
 
   return (
-    <div className="flex flex-col h-full px-4 py-4 gap-3">
-      {/* Search bar */}
-      <div className="shrink-0">
-        <SearchBar
-          value={search}
-          onChange={setSearch}
-          placeholder={t.search_placeholder}
-        />
-      </div>
-
-      {/* Sort buttons */}
-      <div className="shrink-0">
-        <div className="flex w-full glass-panel rounded-xl p-1">
-          {(['recent', 'alpha', 'tier'] as SortMode[]).map(mode => (
-            <button
-              key={mode}
-              onClick={() => setSortMode(mode)}
-              className={`flex-1 text-[13px] py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap font-semibold ${
-                sortMode === mode
-                  ? 'text-white'
-                  : 'text-text-secondary hover:text-text-primary'
-              }`}
-              style={sortMode === mode ? {
-                background: 'linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-glow))',
-                boxShadow: '0 0 12px rgba(108, 99, 255, 0.3)',
-              } : undefined}
-            >
-              {sortLabels[mode]}
-            </button>
-          ))}
+    <div className={`flex flex-col h-full px-4 gap-3 ${isMobile ? 'py-2' : 'py-4'}`}>
+      {/* Search + Sort row on mobile, stacked on desktop */}
+      {isMobile ? (
+        <div className="shrink-0 flex gap-2 items-center">
+          <div className="flex-1 min-w-0">
+            <SearchBar
+              value={search}
+              onChange={setSearch}
+              placeholder={t.search_placeholder}
+              className="[&_input]:h-9 [&_input]:text-xs"
+            />
+          </div>
+          <div className="shrink-0 flex glass-panel rounded-lg p-0.5">
+            {(['recent', 'alpha', 'tier'] as SortMode[]).map(mode => (
+              <button
+                key={mode}
+                onClick={() => setSortMode(mode)}
+                className={`text-[11px] px-2 py-1.5 rounded-md transition-all duration-300 whitespace-nowrap font-semibold ${
+                  sortMode === mode
+                    ? 'text-white'
+                    : 'text-text-secondary hover:text-text-primary'
+                }`}
+                style={sortMode === mode ? {
+                  background: 'linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-glow))',
+                  boxShadow: '0 0 12px rgba(108, 99, 255, 0.3)',
+                } : undefined}
+              >
+                {sortLabels[mode]}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      ) : (
+        <>
+          {/* Search bar */}
+          <div className="shrink-0">
+            <SearchBar
+              value={search}
+              onChange={setSearch}
+              placeholder={t.search_placeholder}
+            />
+          </div>
 
-      {/* Category filters - VERTICAL column layout */}
-      <div className="shrink-0 flex flex-col gap-1.5">
+          {/* Sort buttons */}
+          <div className="shrink-0">
+            <div className="flex w-full glass-panel rounded-xl p-1">
+              {(['recent', 'alpha', 'tier'] as SortMode[]).map(mode => (
+                <button
+                  key={mode}
+                  onClick={() => setSortMode(mode)}
+                  className={`flex-1 text-[13px] py-2.5 rounded-lg transition-all duration-300 whitespace-nowrap font-semibold ${
+                    sortMode === mode
+                      ? 'text-white'
+                      : 'text-text-secondary hover:text-text-primary'
+                  }`}
+                  style={sortMode === mode ? {
+                    background: 'linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-glow))',
+                    boxShadow: '0 0 12px rgba(108, 99, 255, 0.3)',
+                  } : undefined}
+                >
+                  {sortLabels[mode]}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Category filters - horizontal scroll on mobile, vertical on desktop/tablet */}
+      <div className={
+        isMobile
+          ? 'shrink-0 flex flex-row gap-1.5 overflow-x-auto scrollbar-none -mx-4 px-4 pb-0.5'
+          : 'shrink-0 flex flex-col gap-1.5'
+      }>
         <CategoryPill
           name={t.category_all}
           icon="&#x1F310;"
           color="#6C63FF"
           isActive={activeCategory === null}
           onClick={() => setActiveCategory(null)}
+          compact={isMobile}
         />
         {categoryList.map(cat => (
           <CategoryPill
@@ -122,6 +165,7 @@ export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPan
             color={cat.color}
             isActive={activeCategory === cat.id}
             onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
+            compact={isMobile}
           />
         ))}
       </div>
@@ -132,15 +176,15 @@ export function InventoryPanel({ selectedElementId, onElementTap }: InventoryPan
       {/* Elements grid */}
       <div className="flex-1 overflow-y-auto min-h-0 scrollbar-none">
         <div
-          className="grid gap-3 pb-2"
-          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))' }}
+          className={`grid pb-2 ${isMobile ? 'gap-2' : 'gap-3'}`}
+          style={{ gridTemplateColumns: `repeat(auto-fill, minmax(${isMobile ? '72px' : '80px'}, 1fr))` }}
         >
           {filtered.map(element => (
             <DraggableElement
               key={element.id}
               element={element}
               dragId={`inventory-${element.id}`}
-              size="md"
+              size={isMobile ? 'sm' : 'md'}
               isSelected={selectedElementId === element.id}
               onTap={onElementTap ? () => onElementTap(element.id) : undefined}
             />

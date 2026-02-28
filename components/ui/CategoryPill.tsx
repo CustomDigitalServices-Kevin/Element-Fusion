@@ -7,16 +7,19 @@ interface CategoryPillProps {
   isActive?: boolean
   onClick?: () => void
   className?: string
+  compact?: boolean
 }
 
-export function CategoryPill({ name, icon, color, isActive = false, onClick, className }: CategoryPillProps) {
+export function CategoryPill({ name, icon, color, isActive = false, onClick, className, compact = false }: CategoryPillProps) {
   return (
     <button
       onClick={onClick}
       className={clsx(
-        'flex items-center gap-2 w-full px-4 py-2.5 rounded-xl text-[13px] font-medium',
-        'border transition-all duration-300',
+        'flex items-center border transition-all duration-300',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary',
+        compact
+          ? 'gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium whitespace-nowrap shrink-0'
+          : 'gap-2 w-full px-4 py-2.5 rounded-xl text-[13px] font-medium',
         isActive
           ? 'text-white border-transparent shadow-lg'
           : 'text-text-secondary hover:text-text-primary border-glass-border bg-glass-bg/30 hover:bg-glass-bg/50',
@@ -34,7 +37,7 @@ export function CategoryPill({ name, icon, color, isActive = false, onClick, cla
       }
       aria-pressed={isActive}
     >
-      <span className="text-base leading-none">{icon}</span>
+      <span className={clsx('leading-none', compact ? 'text-sm' : 'text-base')}>{icon}</span>
       <span>{name}</span>
     </button>
   )
